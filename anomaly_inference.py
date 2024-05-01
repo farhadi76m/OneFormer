@@ -10,14 +10,19 @@ import torch
 sys.path.insert(1, os.path.join(sys.path[0], '/content/SeMask-Segmentation/SeMask-Mask2Former'))
 sys.path.insert(1, os.path.join(sys.path[0], '/content/'))
 
+# Import detectron2 utilities
 from detectron2.config import get_cfg
 from detectron2.projects.deeplab import add_deeplab_config
-from detectron2.engine import DefaultPredictor
+from detectron2.data import MetadataCatalog
+from demo.defaults import DefaultPredictor
 
-from mask2former import add_maskformer2_config
-
-import torch.nn.functional as F
-
+from oneformer import (
+    add_oneformer_config,
+    add_common_config,
+    add_swin_config,
+    add_dinat_config,
+    add_convnext_config,
+)
 
 def get_args():
     parser = argparse.ArgumentParser(description="Set up and run the segmentation model")
@@ -34,8 +39,13 @@ def get_args():
 
 def setup_cfg(args):
     cfg = get_cfg()
+    cfg = get_cfg()
     add_deeplab_config(cfg)
-    add_maskformer2_config(cfg)
+    add_common_config(cfg)
+    add_swin_config(cfg)
+    add_dinat_config(cfg)
+    add_convnext_config(cfg)
+    add_oneformer_config(cfg)
     cfg.merge_from_file(args.config_path)
     cfg.merge_from_list(['MODEL.WEIGHTS', args.weights_path])
     cfg.freeze()
